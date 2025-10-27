@@ -1,5 +1,6 @@
 package pl.rsz.springproj.controllers;
 
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,5 +53,13 @@ public class ProductController {
 
         model.addAttribute("product", product);
         return "product-form";
+    }
+
+    @PostMapping("/product/save")
+    public String processForm(Product product) {
+
+        DatabaseDump.saveOrUpdateProduct(product);
+
+        return "redirect:/product-list";
     }
 }
