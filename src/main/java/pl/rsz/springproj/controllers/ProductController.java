@@ -22,10 +22,7 @@ public class ProductController {
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-
         binder.addValidators(new ProductValidator());
-
-        binder.addCustomFormatter(new DimensionsFormatter());
     }
 
     @GetMapping("/product-list")

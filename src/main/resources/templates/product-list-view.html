@@ -38,7 +38,7 @@
 
         <td th:text="${prod.inStock ? 'Tak' : 'Nie'}">Tak</td>
 
-        <td th:text="${prod.dimensions}">-</td>
+        <td th:text="${{prod.dimensions}}">-</td>
 
         <td>
             <a th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
