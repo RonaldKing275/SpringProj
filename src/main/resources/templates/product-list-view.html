@@ -22,6 +22,7 @@
         <th>Cena (PLN)</th>
         <th>Data ważności</th>
         <th>W magazynie</th>
+        <th>Wymiary (SxWxG)</th>
         <th>Opcje</th>
     </tr>
     </thead>
@@ -36,6 +37,8 @@
         <td th:text="${prod.bestBeforeDate != null ? #temporals.format(prod.bestBeforeDate, 'dd-MM-yyyy') : '-'}">01-01-2025</td>
 
         <td th:text="${prod.inStock ? 'Tak' : 'Nie'}">Tak</td>
+
+        <td th:text="${prod.dimensions}">-</td>
 
         <td>
             <a th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
