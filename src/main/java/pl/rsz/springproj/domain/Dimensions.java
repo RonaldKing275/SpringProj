@@ -17,6 +17,12 @@ public class Dimensions implements Serializable {
         this.depth = depth;
     }
 
+    public void setDimensions(Float width, Float height, Float depth) {
+        this.width = width;
+        this.height = height;
+        this.depth = depth;
+    }
+
     public Float getWidth() {
         return width;
     }

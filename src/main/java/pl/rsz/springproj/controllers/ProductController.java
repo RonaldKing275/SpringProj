@@ -23,6 +23,7 @@ public class ProductController {
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.addValidators(new ProductValidator());
+        //binder.setDisallowedFields("createdDate","id");
     }
 
     @GetMapping("/product-list")

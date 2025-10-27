@@ -8,8 +8,8 @@ import pl.rsz.springproj.domain.Product;
 public class ProductValidator implements Validator {
 
     @Override
-    public boolean supports(Class<?> clazz) {
-        return Product.class.equals(clazz);
+    public boolean supports(Class<?> aClass) {
+        return Product.class.equals(aClass);
     }
 
     @Override
