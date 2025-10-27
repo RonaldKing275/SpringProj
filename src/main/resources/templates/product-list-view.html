@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista produktów</title>
+</head>
+<body>
+<h1>Katalog produktów</h1>
+
+<p><a th:href="@{/product/add}">Dodaj nowy produkt</a></p>
+
+<div th:if="${#lists.isEmpty(products)}">
+    <p>Brak produktów w sklepie.</p>
+</div>
+
+<table border="1" th:unless="${#lists.isEmpty(products)}">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nazwa</th>
+        <th>Kategoria</th>
+        <th>Cena (PLN)</th>
+        <th>Data ważności</th>
+        <th>W magazynie</th>
+        <th>Opcje</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="prod : ${products}">
+        <td th:text="${prod.id}">1</td>
+        <td th:text="${prod.name}">Nazwa produktu</td>
+        <td th:text="${prod.category}">Kategoria</td>
+
+        <td th:text="${#numbers.formatDecimal(prod.price, 1, 2, 'COMMA')}">99,99</td>
+
+        <td th:text="${prod.bestBeforeDate != null ? #temporals.format(prod.bestBeforeDate, 'dd-MM-yyyy') : '-'}">01-01-2025</td>
+
+        <td th:text="${prod.inStock ? 'Tak' : 'Nie'}">Tak</td>
+
+        <td>
+            <a th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
+            |
+            <a th:href="@{/product/edit/{id}(id=${prod.id})}">Edytuj</a>
+            |
+            <a th:href="@{/product-delete(id=${prod.id})}">Usuń</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

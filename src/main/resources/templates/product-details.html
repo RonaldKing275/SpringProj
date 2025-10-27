@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Szczegóły produktu</title>
+</head>
+<body>
+<h1>Szczegóły produktu</h1>
+
+<div th:object="${product}">
+    <p>ID: <span th:text="*{id}">1</span></p>
+    <p>Nazwa: <span th:text="*{name}">Nazwa produktu</span></p>
+    <p>Kategoria: <span th:text="*{category}">Kategoria</span></p>
+    <p>Cena: <span th:text="*{price}">99.99</span></p>
+    <p>Data ważności: <span th:text="*{bestBeforeDate}">2025-01-01</span></p>
+    <p>W magazynie: <span th:text="*{inStock}">true</span></p>
+</div>
+
+<hr/>
+<a th:href="@{/product-list}">Powrót do listy</a>
+
+</body>
+</html>
