@@ -2,6 +2,7 @@ package pl.rsz.springproj.domain;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,6 +27,7 @@ public class Product implements Serializable {
     @NumberFormat(pattern = "#.00")
     @NotNull(message = "{NotNull.product.price}")
     @Min(value = 0, message = "{Min.product.price}")
+    @Max(value = 25000, message = "{Max.product.price}")
     private Float price;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
