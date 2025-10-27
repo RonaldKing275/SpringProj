@@ -1,6 +1,14 @@
 package pl.rsz.springproj.controllers;
 
+import jakarta.validation.Valid;
+import org.springframework.validation.BindingResult;
+
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PostMapping;
+import pl.rsz.springproj.formatters.DimensionsFormatter;
+import pl.rsz.springproj.validators.ProductValidator;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,6 +19,14 @@ import pl.rsz.springproj.domain.Product;
 
 @Controller
 public class ProductController {
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+
+        binder.addValidators(new ProductValidator());
+
+        binder.addCustomFormatter(new DimensionsFormatter());
+    }
 
     @GetMapping("/product-list")
     public String showProductList(Model model) {
@@ -37,9 +53,7 @@ public class ProductController {
     }
 
     @GetMapping(path = {"/product/add", "/product/edit/{id}"})
-    public String showForm(
-            @PathVariable(name = "id", required = false) Long productId,
-            Model model) {
+    public String showForm(@PathVariable(name = "id", required = false) Long productId, Model model) {
 
         Product product;
         if (productId != null) {
@@ -56,10 +70,13 @@ public class ProductController {
     }
 
     @PostMapping("/product/save")
-    public String processForm(Product product) {
+    public String processForm(@Valid Product product, BindingResult result) {
+
+        if (result.hasErrors()) {
+            return "product-form";
+        }
 
         DatabaseDump.saveOrUpdateProduct(product);
-
         return "redirect:/product-list";
     }
 }

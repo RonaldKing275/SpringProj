@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <title>Formularz produktu</title>
     <style>
+        body { font-family: sans-serif; }
         div { margin-bottom: 10px; }
         label { display: inline-block; width: 150px; }
+        .error { color: red; font-size: 0.9em; }
     </style>
 </head>
 <body>
@@ -16,41 +18,51 @@
     <input type="hidden" th:field="*{id}" />
 
     <div>
-        <label>Nazwa produktu:</label>
+        <label th:text="#{label.product.name}">Nazwa:</label>
         <input type="text" th:field="*{name}" />
+        <span class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
     </div>
 
     <div>
-        <label>Kategoria:</label>
+        <label th:text="#{label.product.category}">Kategoria:</label>
         <select th:field="*{category}">
             <option value="">-- Wybierz kategorię --</option>
             <option value="Pokarm">Pokarm</option>
             <option value="Akcesoria">Akcesoria</option>
             <option value="Zwierzęta">Zwierzęta</option>
         </select>
+        <span class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></span>
     </div>
 
     <div>
-        <label>Cena (PLN):</label>
-        <input type="number" step="0.01" th:field="*{price}" />
+        <label th:text="#{label.product.price}">Cena:</label>
+        <input type="text" th:field="*{price}" />
+        <span class="error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
     </div>
 
     <div>
-        <label>Data ważności:</label>
+        <label th:text="#{label.product.bestBeforeDate}">Data ważności:</label>
         <input type="date" th:field="*{bestBeforeDate}" />
+        <span class="error" th:if="${#fields.hasErrors('bestBeforeDate')}" th:errors="*{bestBeforeDate}"></span>
     </div>
 
     <div>
-        <label>W magazynie:</label>
+        <label th:text="#{label.product.inStock}">W magazynie:</label>
         <input type="checkbox" th:field="*{inStock}" />
     </div>
 
     <div>
-        <input type="submit" value="Zapisz" />
+        <label th:text="#{label.product.dimensions}">Wymiary (SxWxG):</label>
+        <input type="text" th:field="*{dimensions}" placeholder="np. 10x20x5" />
+        <span class="error" th:if="${#fields.hasErrors('dimensions')}" th:errors="*{dimensions}"></span>
+    </div>
+
+    <div>
+        <input type="submit" th:value="#{label.product.submit}" />
     </div>
 </form>
 
 <hr/>
-<a th:href="@{/product-list}">Anuluj i wróć do listy</a>
+<a th:href="@{/product-list}" th:text="#{label.product.cancel}">Anuluj</a>
 </body>
 </html>
