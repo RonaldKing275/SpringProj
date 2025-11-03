@@ -65,9 +65,29 @@ public class DataInitializer {
                 p3.setInStock(false);
                 p3.setStatus(ProductStatus.UNAVAILABLE);
 
+                Product p4 = new Product();
+                p4.setName("Szczotka do sierści");
+                p4.setCategory(akcesoria);
+                p4.setPrice(20.50f);
+                p4.setBestBeforeDate(LocalDate.of(2099, 12, 12));
+                p4.setInStock(true);
+                p4.setDimensions(new Dimensions(10f, 15f, 4.5f));
+                p4.setStatus(ProductStatus.AVAILABLE);
+
+                Product p5 = new Product();
+                p5.setName("Kocimiętka");
+                p5.setCategory(akcesoria);
+                p5.setPrice(999.99f);
+                p5.setBestBeforeDate(LocalDate.of(2029, 8, 31));
+                p5.setInStock(false);
+                p5.setDimensions(new Dimensions(5f, 5f, 5f));
+                p5.setStatus(ProductStatus.ON_ORDER);
+
                 productRepository.save(p1);
                 productRepository.save(p2);
                 productRepository.save(p3);
+                productRepository.save(p4);
+                productRepository.save(p5);
             }
         };
     }

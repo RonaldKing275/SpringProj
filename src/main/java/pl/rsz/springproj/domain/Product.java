@@ -60,6 +60,14 @@ public class Product implements Serializable {
         this.dimensions = new Dimensions();
     }
 
+    public String isInStockName() {
+        if (isInStock()) {
+            return "Tak";
+        } else {
+            return "Nie";
+        }
+    }
+
     public Long getId() {
         return id;
     }
