@@ -1,6 +1,5 @@
 package pl.rsz.springproj.domain;
 
-// Importy dla JPA (Lab 5)
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -11,72 +10,55 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.ManyToOne;
 
-// Importy dla walidacji (Lab 4)
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-// Importy dla formatowania (Lab 4)
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 
-/**
- * Główna klasa encji reprezentująca Produkt.
- * Łączy wymagania z Lab 2 (Java Bean), Lab 4 (Walidacja, Formatowanie)
- * i Lab 5 (Encja JPA, Relacje).
- */
-@Entity // Mówi JPA, że ta klasa jest tabelą w bazie danych
-public class Product implements Serializable { // Wymaganie z Lab 2
+@Entity
+public class Product implements Serializable {
 
-    // --- Pola Encji ---
-
-    @Id // Oznacza klucz główny
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // Automatyczna inkrementacja ID
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "{NotBlank.product.name}") // Walidacja z Lab 4
-    @Size(min = 3, max = 50, message = "{Size.product.name}") // Walidacja z Lab 4
-    @Column(nullable = false) // Kolumna nie może być pusta (JPA, Lab 5)
+    @NotBlank(message = "{NotBlank.product.name}")
+    @Size(min = 3, max = 50, message = "{Size.product.name}")
+    @Column(nullable = false)
     private String name;
 
-    @NotNull(message = "Musisz wybrać kategorię") // Walidacja dla obiektu
-    @ManyToOne // Relacja Wiele-do-Jednego (Lab 5)
-    private Category category; // Zmiana z String na Category (Lab 5)
+    @NotNull(message = "Musisz wybrać kategorię")
+    @ManyToOne
+    private Category category;
 
-    @NumberFormat(pattern = "#.00") // Formatowanie z Lab 4
-    @NotNull(message = "{NotNull.product.price}") // Walidacja z Lab 4
-    @Min(value = 0, message = "{Min.product.price}") // Walidacja z Lab 4
+    @NumberFormat(pattern = "#.00")
+    @NotNull(message = "{NotNull.product.price}")
+    @Min(value = 0, message = "{Min.product.price}")
     private Float price;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd") // Formatowanie z Lab 4
-    @Future(message = "{Future.product.bestBeforeDate}") // Walidacja z Lab 4
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Future(message = "{Future.product.bestBeforeDate}")
     private LocalDate bestBeforeDate;
 
     private boolean inStock;
 
-    @Embedded // Mówi JPA, aby wbudowało tu pola z klasy Dimensions (Lab 5)
+    @Embedded
     private Dimensions dimensions;
 
-    @NotNull(message = "Musisz wybrać status") // Walidacja dla obiektu
-    @Enumerated(EnumType.STRING) // Zapisuje ENUM jako tekst w bazie (Lab 5)
-    private ProductStatus status; // Zmiana z String na ProductStatus (Lab 5)
+    @NotNull(message = "Musisz wybrać status")
+    @Enumerated(EnumType.STRING)
+    private ProductStatus status;
 
-    // --- Konstruktory ---
-
-    /**
-     * Konstruktor bezargumentowy wymagany przez JPA i Java Beans.
-     */
     public Product() {
-        // Inicjalizacja wbudowanego obiektu (z Lab 4)
         this.dimensions = new Dimensions();
     }
-
-    // --- Gettery i Settery (wymagane przez Java Beans) ---
 
     public Long getId() {
         return id;

@@ -15,8 +15,9 @@ public class ProductValidator implements Validator {
     public void validate(Object target, Errors errors) {
         Product product = (Product) target;
 
-        if (product.getName() != null && product.getCategory() != null) {
-            if (product.getName().equalsIgnoreCase(product.getCategory())) {
+        if (product.getName() != null && product.getCategory() != null && product.getCategory().getName() != null) {
+
+            if (product.getName().equalsIgnoreCase(product.getCategory().getName())) {
                 errors.rejectValue("category", "category.identicalToName", "Kategoria nie może być taka sama jak nazwa.");
             }
         }
