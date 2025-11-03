@@ -10,10 +10,15 @@
 <div th:object="${product}">
     <p>ID: <span th:text="*{id}">1</span></p>
     <p>Nazwa: <span th:text="*{name}">Nazwa produktu</span></p>
-    <p>Kategoria: <span th:text="*{category}">Kategoria</span></p>
+
+    <p>Kategoria: <span th:text="*{category.name}">Kategoria</span></p>
+
     <p>Cena: <span th:text="*{price}">99.99</span></p>
     <p>Data ważności: <span th:text="*{bestBeforeDate}">2025-01-01</span></p>
     <p>W magazynie: <span th:text="*{inStock}">true</span></p>
+
+    <p>Status: <span th:text="*{status.description}">Dostępny</span></p>
+
     <p>Wymiary (SxWxG): <span th:text="*{{dimensions}}">-</span></p>
 </div>
 
