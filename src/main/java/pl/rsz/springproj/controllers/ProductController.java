@@ -1,40 +1,41 @@
 package pl.rsz.springproj.controllers;
 
 import jakarta.validation.Valid;
-import org.springframework.validation.BindingResult;
-
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
-import pl.rsz.springproj.formatters.DimensionsFormatter;
-import pl.rsz.springproj.validators.ProductValidator;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import pl.rsz.springproj.DatabaseDump;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import pl.rsz.springproj.domain.Product;
+import pl.rsz.springproj.repositories.ProductRepository;
+import pl.rsz.springproj.validators.ProductValidator;
 
 @Controller
 public class ProductController {
 
+    private final ProductRepository productRepository;
+
+    @Autowired
+    public ProductController(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.addValidators(new ProductValidator());
-        //binder.setDisallowedFields("createdDate","id");
     }
 
     @GetMapping("/product-list")
     public String showProductList(Model model) {
-        model.addAttribute("products", DatabaseDump.getAllProducts());
+        model.addAttribute("products", productRepository.findAll());
         return "product-list-view";
     }
 
     @GetMapping("/product-details")
     public String showProductDetails(@RequestParam("id") Long productId, Model model) {
-        Product product = DatabaseDump.findProductById(productId, null);
+        Product product = productRepository.findById(productId)
+                .orElse(null);
 
         if (product != null) {
             model.addAttribute("product", product);
@@ -46,19 +47,19 @@ public class ProductController {
 
     @GetMapping("/product-delete")
     public String deleteProduct(@RequestParam("id") Long productId) {
-        DatabaseDump.deleteProductById(productId);
+        productRepository.deleteById(productId);
         return "redirect:/product-list";
     }
 
     @GetMapping(path = {"/product/add", "/product/edit/{id}"})
-    public String showForm(@PathVariable(name = "id", required = false) Long productId, Model model) {
+    public String showForm(
+            @PathVariable(name = "id", required = false) Long productId,
+            Model model) {
 
         Product product;
         if (productId != null) {
-            product = DatabaseDump.findProductById(productId, null);
-            if (product == null) {
-                product = new Product();
-            }
+            product = productRepository.findById(productId)
+                    .orElse(new Product());
         } else {
             product = new Product();
         }
@@ -68,13 +69,17 @@ public class ProductController {
     }
 
     @PostMapping("/product/save")
-    public String processForm(@Valid Product product, BindingResult result) {
+    public String processForm(
+            @Valid @ModelAttribute("product") Product product,
+            BindingResult result
+    ) {
 
         if (result.hasErrors()) {
             return "product-form";
         }
 
-        DatabaseDump.saveOrUpdateProduct(product);
+        productRepository.save(product);
+
         return "redirect:/product-list";
     }
 }

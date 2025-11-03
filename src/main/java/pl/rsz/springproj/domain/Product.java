@@ -1,11 +1,13 @@
 package pl.rsz.springproj.domain;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
@@ -13,12 +15,16 @@ import org.springframework.format.annotation.NumberFormat;
 import java.io.Serializable;
 import java.time.LocalDate;
 
+@Entity
 public class Product implements Serializable {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotBlank(message = "{NotBlank.product.name}")
     @Size(min = 3, max = 50, message = "{Size.product.name}")
+    @Column(nullable = false)
     private String name;
 
     @NotBlank(message = "{NotBlank.product.category}")
@@ -27,7 +33,6 @@ public class Product implements Serializable {
     @NumberFormat(pattern = "#.00")
     @NotNull(message = "{NotNull.product.price}")
     @Min(value = 0, message = "{Min.product.price}")
-    @Max(value = 25000, message = "{Max.product.price}")
     private Float price;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
@@ -36,23 +41,17 @@ public class Product implements Serializable {
 
     private boolean inStock;
 
+    @Embedded
     private Dimensions dimensions;
+
+    private String status;
 
     public Product() {
         this.dimensions = new Dimensions();
     }
 
     public Product(Long id, String name, String category, Float price, LocalDate bestBeforeDate, boolean inStock) {
-        this.id = id;
-        this.name = name;
-        this.category = category;
-        this.price = price;
-        this.bestBeforeDate = bestBeforeDate;
-        this.inStock = inStock;
-
-        this.dimensions = new Dimensions();
     }
-
 
     public Long getId() {
         return id;
@@ -108,5 +107,13 @@ public class Product implements Serializable {
 
     public void setDimensions(Dimensions dimensions) {
         this.dimensions = dimensions;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

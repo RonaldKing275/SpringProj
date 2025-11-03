@@ -1,7 +1,9 @@
 package pl.rsz.springproj.domain;
 
 import java.io.Serializable;
+import jakarta.persistence.Embeddable;
 
+@Embeddable
 public class Dimensions implements Serializable {
 
     private Float width;
