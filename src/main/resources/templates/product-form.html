@@ -27,9 +27,9 @@
         <label th:text="#{label.product.category}">Kategoria:</label>
         <select th:field="*{category}">
             <option value="">-- Wybierz kategorię --</option>
-            <option value="Pokarm">Pokarm</option>
-            <option value="Akcesoria">Akcesoria</option>
-            <option value="Zwierzęta">Zwierzęta</option>
+            <option th:each="cat : ${categories}"
+                    th:value="${cat.id}"
+                    th:text="${cat.name}">Pokarm</option>
         </select>
         <span class="error" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></span>
     </div>
@@ -49,6 +49,17 @@
     <div>
         <label th:text="#{label.product.inStock}">W magazynie:</label>
         <input type="checkbox" th:field="*{inStock}" />
+    </div>
+
+    <div>
+        <label>Status:</label>
+        <select th:field="*{status}">
+            <option value="">-- Wybierz status --</option>
+            <option th:each="stat : ${statuses}"
+                    th:value="${stat}"
+                    th:text="${stat.description}">Dostępny</option>
+        </select>
+        <span class="error" th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></span>
     </div>
 
     <div>

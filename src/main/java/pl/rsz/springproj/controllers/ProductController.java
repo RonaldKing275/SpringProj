@@ -10,11 +10,18 @@ import org.springframework.web.bind.annotation.*;
 import pl.rsz.springproj.domain.Product;
 import pl.rsz.springproj.repositories.ProductRepository;
 import pl.rsz.springproj.validators.ProductValidator;
+import pl.rsz.springproj.domain.Category;
+import pl.rsz.springproj.domain.ProductStatus;
+import pl.rsz.springproj.repositories.CategoryRepository;
+import java.util.List;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
 public class ProductController {
 
     private final ProductRepository productRepository;
+    private CategoryRepository categoryRepository;
+
 
     @Autowired
     public ProductController(ProductRepository productRepository) {
@@ -81,5 +88,20 @@ public class ProductController {
         productRepository.save(product);
 
         return "redirect:/product-list";
+    }
+
+    @Autowired
+    public void setCategoryRepository(CategoryRepository categoryRepository) {
+        this.categoryRepository = categoryRepository;
+    }
+
+    @ModelAttribute("categories")
+    public List<Category> loadCategories() {
+        return categoryRepository.findAll();
+    }
+
+    @ModelAttribute("statuses")
+    public ProductStatus[] loadStatuses() {
+        return ProductStatus.values();
     }
 }

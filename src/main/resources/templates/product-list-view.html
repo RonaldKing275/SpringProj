@@ -18,25 +18,22 @@
     <tr>
         <th>ID</th>
         <th>Nazwa</th>
-        <th>Kategoria</th>
-        <th>Cena (PLN)</th>
-        <th>Data ważności</th>
-        <th>W magazynie</th>
-        <th>Wymiary (SxWxG)</th>
-        <th>Opcje</th>
-    </tr>
+        <th>Kategoria</th> <th>Cena (PLN)</th> <th>Data ważności</th> <th>W magazynie</th> <th>Status</th> <th>Wymiary (SxWxG)</th> <th>Opcje</th> </tr>
     </thead>
     <tbody>
     <tr th:each="prod : ${products}">
         <td th:text="${prod.id}">1</td>
         <td th:text="${prod.name}">Nazwa produktu</td>
-        <td th:text="${prod.category}">Kategoria</td>
+
+        <td th:text="${prod.category.name}">Kategoria</td>
 
         <td th:text="${#numbers.formatDecimal(prod.price, 1, 2, 'COMMA')}">99,99</td>
 
         <td th:text="${prod.bestBeforeDate != null ? #temporals.format(prod.bestBeforeDate, 'dd-MM-yyyy') : '-'}">01-01-2025</td>
 
         <td th:text="${prod.inStock ? 'Tak' : 'Nie'}">Tak</td>
+
+        <td th:text="${prod.status.description}">Dostępny</td>
 
         <td th:text="${{prod.dimensions}}">-</td>
 
