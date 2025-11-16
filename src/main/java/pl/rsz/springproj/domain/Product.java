@@ -1,27 +1,27 @@
 package pl.rsz.springproj.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-import jakarta.validation.constraints.Future;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
+
 import java.time.LocalDate;
 
+import java.util.Set;
+import java.util.HashSet;
+
+import pl.rsz.springproj.domain.Tag;
+
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 public class Product implements Serializable {
 
@@ -50,85 +50,12 @@ public class Product implements Serializable {
     private boolean inStock;
 
     @Embedded
-    private Dimensions dimensions;
+    private Dimensions dimensions = new Dimensions();
 
     @NotNull(message = "Musisz wybrać status")
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    public Product() {
-        this.dimensions = new Dimensions();
-    }
-
-    public String isInStockName() {
-        if (isInStock()) {
-            return "Tak";
-        } else {
-            return "Nie";
-        }
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public Float getPrice() {
-        return price;
-    }
-
-    public void setPrice(Float price) {
-        this.price = price;
-    }
-
-    public LocalDate getBestBeforeDate() {
-        return bestBeforeDate;
-    }
-
-    public void setBestBeforeDate(LocalDate bestBeforeDate) {
-        this.bestBeforeDate = bestBeforeDate;
-    }
-
-    public boolean isInStock() {
-        return inStock;
-    }
-
-    public void setInStock(boolean inStock) {
-        this.inStock = inStock;
-    }
-
-    public Dimensions getDimensions() {
-        return dimensions;
-    }
-
-    public void setDimensions(Dimensions dimensions) {
-        this.dimensions = dimensions;
-    }
-
-    public ProductStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ProductStatus status) {
-        this.status = status;
-    }
+    @ManyToMany(fetch = FetchType.EAGER)
+    private Set<Tag> tags = new HashSet<>();
 }

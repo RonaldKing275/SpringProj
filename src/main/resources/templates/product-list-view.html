@@ -7,6 +7,42 @@
 <body>
 <h1>Katalog produktów</h1>
 
+<fieldset>
+    <legend>Filtrowanie</legend>
+    <form th:action="@{/product-list}" method="get" style="display: flex; gap: 10px; align-items: flex-end;">
+
+        <div>
+            <label>Fraza (w nazwie lub kategorii):</label><br>
+            <input type="text" name="phrase" th:value="${param.phrase}" />
+        </div>
+
+        <div>
+            <label>Cena Min:</label><br>
+            <input type="number" step="0.01" name="minPrice" style="width: 70px;" th:value="${param.minPrice}" />
+        </div>
+        <div>
+            <label>Cena Max:</label><br>
+            <input type="number" step="0.01" name="maxPrice" style="width: 70px;" th:value="${param.maxPrice}" />
+        </div>
+
+        <div>
+            <label>Kategoria:</label><br>
+            <select name="categoryId">
+                <option value="">-- Wszystkie --</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${param.categoryId == cat.id}">Pokarm</option>
+            </select>
+        </div>
+
+        <div>
+            <input type="submit" value="Filtruj" />
+            <a th:href="@{/product-list}">Wyczyść</a>
+        </div>
+    </form>
+</fieldset>
+<hr>
 <p><a th:href="@{/product/add}">Dodaj nowy produkt</a></p>
 
 <div th:if="${#lists.isEmpty(products)}">
@@ -18,25 +54,31 @@
     <tr>
         <th>ID</th>
         <th>Nazwa</th>
-        <th>Kategoria</th> <th>Cena (PLN)</th> <th>Data ważności</th> <th>W magazynie</th> <th>Status</th> <th>Wymiary (SxWxG)</th> <th>Opcje</th> </tr>
+        <th>Kategoria</th>
+        <th>Cena (PLN)</th>
+        <th>Data ważności</th>
+        <th>W magazynie</th>
+        <th>Status</th>
+        <th>Wymiary (SxWxG)</th>
+        <th>Tagi</th> <th>Opcje</th>
+    </tr>
     </thead>
     <tbody>
     <tr th:each="prod : ${products}">
         <td th:text="${prod.id}">1</td>
         <td th:text="${prod.name}">Nazwa produktu</td>
-
         <td th:text="${prod.category.name}">Kategoria</td>
-
         <td th:text="${#numbers.formatDecimal(prod.price, 1, 2, 'COMMA')}">99,99</td>
-
         <td th:text="${prod.bestBeforeDate != null ? #temporals.format(prod.bestBeforeDate, 'dd-MM-yyyy') : '-'}">01-01-2025</td>
-
         <td th:text="${prod.inStock ? 'Tak' : 'Nie'}">Tak</td>
-
         <td th:text="${prod.status.description}">Dostępny</td>
-
         <td th:text="${{prod.dimensions}}">-</td>
 
+        <td>
+            <span th:each="tag : ${prod.tags}" th:text="${tag.name}" style="display: block;">
+                Promocja
+            </span>
+        </td>
         <td>
             <a th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
             |
@@ -47,8 +89,5 @@
     </tr>
     </tbody>
 </table>
-
-<p><a th:href="@{/}">Wróć na stronę główną</a></p>
-
 </body>
 </html>

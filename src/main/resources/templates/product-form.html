@@ -8,6 +8,9 @@
         div { margin-bottom: 10px; }
         label { display: inline-block; width: 150px; }
         .error { color: red; font-size: 0.9em; }
+        /* Styl dla checkboxów */
+        div.checkbox-group label { width: auto; }
+        div.checkbox-item { margin-left: 150px; }
     </style>
 </head>
 <body>
@@ -68,6 +71,16 @@
         <span class="error" th:if="${#fields.hasErrors('dimensions')}" th:errors="*{dimensions}"></span>
     </div>
 
+    <div class="checkbox-group">
+        <label>Tagi:</label>
+        <div>
+            <div th:each="tag:${tags}" class="checkbox-item">
+                <input type="checkbox" th:field="*{tags}" th:value="${tag.id}" th:id="${'tag-' + tag.id}"/>
+                <label th:for="${'tag-' + tag.id}" th:text="${tag.name}">Nazwa Tagu</label>
+            </div>
+            <span class="error checkbox-item" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></span>
+        </div>
+    </div>
     <div>
         <input type="submit" th:value="#{label.product.submit}" />
     </div>

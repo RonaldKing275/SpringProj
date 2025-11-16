@@ -4,12 +4,10 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.rsz.springproj.domain.Category;
-import pl.rsz.springproj.domain.Dimensions;
-import pl.rsz.springproj.domain.Product;
-import pl.rsz.springproj.domain.ProductStatus;
+import pl.rsz.springproj.domain.*;
 import pl.rsz.springproj.repositories.CategoryRepository;
 import pl.rsz.springproj.repositories.ProductRepository;
+import pl.rsz.springproj.repositories.TagRepository;
 
 import java.time.LocalDate;
 
@@ -18,29 +16,37 @@ public class DataInitializer {
 
     @Autowired
     private ProductRepository productRepository;
-
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
 
     @Bean
     public InitializingBean initDatabase() {
         return () -> {
 
             if (categoryRepository.count() == 0) {
-                Category c1 = new Category("Pokarm");
-                Category c2 = new Category("Akcesoria");
-                Category c3 = new Category("Zwierzęta");
-
-                categoryRepository.save(c1);
-                categoryRepository.save(c2);
-                categoryRepository.save(c3);
+                categoryRepository.save(new Category("Pokarm"));
+                categoryRepository.save(new Category("Akcesoria"));
+                categoryRepository.save(new Category("Zwierzęta"));
             }
 
+            if (tagRepository.count() == 0) {
+                tagRepository.save(new Tag("Dla psa"));
+                tagRepository.save(new Tag("Dla kota"));
+                tagRepository.save(new Tag("Promocja"));
+                tagRepository.save(new Tag("Inne"));
+            }
+
+            Category pokarm = categoryRepository.findAll().get(0);
+            Category akcesoria = categoryRepository.findAll().get(1);
+            Tag tagPies = tagRepository.findAll().get(0);
+            Tag tagKot = tagRepository.findAll().get(1);
+            Tag tagPromo = tagRepository.findAll().get(2);
+            Tag tagInne = tagRepository.findAll().get(3);
+
             if (productRepository.count() == 0) {
-
-                Category pokarm = categoryRepository.findAll().get(0);
-                Category akcesoria = categoryRepository.findAll().get(1);
-
                 Product p1 = new Product();
                 p1.setName("Karma dla psa (Wołowina)");
                 p1.setCategory(pokarm);
@@ -49,6 +55,8 @@ public class DataInitializer {
                 p1.setInStock(true);
                 p1.setDimensions(new Dimensions(30f, 50f, 20f));
                 p1.setStatus(ProductStatus.AVAILABLE);
+                p1.getTags().add(tagPies);
+                p1.getTags().add(tagPromo);
 
                 Product p2 = new Product();
                 p2.setName("Drapak dla kota");
@@ -57,6 +65,7 @@ public class DataInitializer {
                 p2.setInStock(true);
                 p2.setDimensions(new Dimensions(40f, 120f, 40f));
                 p2.setStatus(ProductStatus.AVAILABLE);
+                p2.getTags().add(tagKot);
 
                 Product p3 = new Product();
                 p3.setName("Żwirek dla kota");
@@ -64,30 +73,24 @@ public class DataInitializer {
                 p3.setPrice(45.99f);
                 p3.setInStock(false);
                 p3.setStatus(ProductStatus.UNAVAILABLE);
+                p3.getTags().add(tagKot);
 
                 Product p4 = new Product();
-                p4.setName("Szczotka do sierści");
+                p4.setName("Inny produkty");
                 p4.setCategory(akcesoria);
-                p4.setPrice(20.50f);
-                p4.setBestBeforeDate(LocalDate.of(2099, 12, 12));
+                p4.setPrice(999.00f);
                 p4.setInStock(true);
-                p4.setDimensions(new Dimensions(10f, 15f, 4.5f));
+                p4.setDimensions(new Dimensions(12f, 12f, 12f));
                 p4.setStatus(ProductStatus.AVAILABLE);
+                p4.getTags().add(tagInne);
 
-                Product p5 = new Product();
-                p5.setName("Kocimiętka");
-                p5.setCategory(akcesoria);
-                p5.setPrice(999.99f);
-                p5.setBestBeforeDate(LocalDate.of(2029, 8, 31));
-                p5.setInStock(false);
-                p5.setDimensions(new Dimensions(5f, 5f, 5f));
-                p5.setStatus(ProductStatus.ON_ORDER);
+                // Do testu!
+                //productRepository.saveAll(productRepository.findAll());0
 
                 productRepository.save(p1);
                 productRepository.save(p2);
                 productRepository.save(p3);
                 productRepository.save(p4);
-                productRepository.save(p5);
             }
         };
     }
