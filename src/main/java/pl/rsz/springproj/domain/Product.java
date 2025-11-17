@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.HashSet;
 
 import pl.rsz.springproj.domain.Tag;
+import pl.rsz.springproj.repositories.TagRepository;
 
 @Getter
 @Setter
@@ -58,4 +59,7 @@ public class Product implements Serializable {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Tag> tags = new HashSet<>();
+
+//    @Embedded
+//    private TagRepository tagi;
 }

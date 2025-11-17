@@ -8,15 +8,14 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // 1. Wyszukiwanie frazy w nazwie (ignoruje wielkość liter)
-    List<Product> findByNameContainingIgnoreCase(String name);
+    List<Product> findByNameContainingIgnoreCaseOrCategoryNameContainingIgnoreCase(String namePhrase, String categoryPhrase);
 
-    // 2. Wyszukiwanie po zakresie cen
     List<Product> findByPriceBetween(Float minPrice, Float maxPrice);
 
-    // 3. Wyszukiwanie po zawartości relacji Many-To-One
+    List<Product> findByNameContainingIgnoreCaseAndPriceBetween(
+            String namePhrase, Float minPrice, Float maxPrice);
+
     List<Product> findByCategory(Category category);
 
-    // 4. Wyszukiwanie frazy w nazwie LUB nazwie kategorii (ignoruje wielkość liter)
-    List<Product> findByNameContainingIgnoreCaseOrCategoryNameContainingIgnoreCase(String namePhrase, String categoryPhrase);
+    List<Product> findByNameContainingIgnoreCase(String name);
 }

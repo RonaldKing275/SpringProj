@@ -43,11 +43,10 @@ public class ProductController {
         binder.addValidators(new ProductValidator());
     }
 
-    // ZAD 3: Zmodyfikowana metoda do filtrowania
     @GetMapping("/product-list")
     public String showProductList(
             @RequestParam(name = "phrase", required = false) String phrase,
-            @RequestParam(name = "minPrice", required = false) Float minPrice,
+            @RequestParam(name = "minPrice", required = false, defaultValue = "0") Float minPrice,
             @RequestParam(name = "maxPrice", required = false) Float maxPrice,
             @RequestParam(name = "categoryId", required = false) Long categoryId,
             Model model
@@ -55,16 +54,24 @@ public class ProductController {
         log.info("Wyświetlanie listy produktów z filtrami");
         List<Product> products;
 
-        if (phrase != null && !phrase.isEmpty()) {
+        if (phrase != null && !phrase.isEmpty() && maxPrice != null && minPrice < maxPrice) {
+            products = productRepository.findByNameContainingIgnoreCaseAndPriceBetween(
+                    phrase, minPrice, maxPrice);
+            log.info("Filtrowanie po frazie + cenie");
+        } else if (phrase != null && !phrase.isEmpty()) {
             products = productRepository.findByNameContainingIgnoreCaseOrCategoryNameContainingIgnoreCase(phrase, phrase);
-        } else if (minPrice != null && maxPrice != null) {
+            log.info("Filtrowanie po frazie");
+        } else if (maxPrice != null && minPrice < maxPrice) {
             products = productRepository.findByPriceBetween(minPrice, maxPrice);
+            log.info("Filtrowanie po cenie");
         } else if (categoryId != null) {
             products = categoryRepository.findById(categoryId)
                     .map(productRepository::findByCategory)
                     .orElseGet(productRepository::findAll);
+            log.info("Filtrowanie po kategorii");
         } else {
             products = productRepository.findAll();
+            log.info("Filtrowanie brak!");
         }
 
         model.addAttribute("products", products);

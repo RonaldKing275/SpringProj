@@ -1,5 +1,6 @@
 package pl.rsz.springproj;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -12,6 +13,7 @@ import pl.rsz.springproj.repositories.TagRepository;
 import java.time.LocalDate;
 
 @Configuration
+@Log4j2
 public class DataInitializer {
 
     @Autowired
@@ -21,6 +23,8 @@ public class DataInitializer {
 
     @Autowired
     private TagRepository tagRepository;
+
+    private int count = 0;
 
     @Bean
     public InitializingBean initDatabase() {
@@ -84,8 +88,10 @@ public class DataInitializer {
                 p4.setStatus(ProductStatus.AVAILABLE);
                 p4.getTags().add(tagInne);
 
-                // Do testu!
-                //productRepository.saveAll(productRepository.findAll());0
+                // TODO:
+                // Dodać wszystkie produkty na raz
+
+                //productRepository.saveAll();
 
                 productRepository.save(p1);
                 productRepository.save(p2);
