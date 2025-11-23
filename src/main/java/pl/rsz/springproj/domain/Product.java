@@ -39,7 +39,6 @@ public class Product implements Serializable {
     private String name;
 
     @NotNull(message = "Musisz wybrać kategorię")
-    // ZADANIE 5: Zmiana na LAZY (domyślnie dla ManyToOne jest EAGER)
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
@@ -61,11 +60,9 @@ public class Product implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    // ZADANIE 5: Zmiana na LAZY (domyślnie dla ManyToMany jest LAZY, ale w Twoim kodzie było EAGER)
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
 
-    // Pomocnicza metoda do dodawania tagów
     public Set<Tag> getTags() {
         return tags;
     }

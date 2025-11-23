@@ -42,7 +42,6 @@ public class ProductController {
         binder.addValidators(new ProductValidator());
     }
 
-    // Główna metoda wyświetlająca listę - używa ZADANIA 3 (SpEL) lub ZADANIA 4 (Specifications)
     @GetMapping("/product-list")
     public String showProductList(
             @RequestParam(name = "phrase", required = false) String phrase,
@@ -53,28 +52,9 @@ public class ProductController {
     ) {
         log.info("Wyświetlanie listy produktów z filtrami");
         List<Product> products;
-
-        // --- SPOSÓB 1: ZADANIE 3 (SpEL + Obiekt Filtra) ---
-        // Tworzymy obiekt filtra z parametrów żądania
         ProductFilter filter = new ProductFilter(phrase, minPrice, maxPrice, categoryId);
-        // Wywołujemy metodę z repozytorium używającą SpEL
         products = productRepository.findWithFilter(filter);
 
-        /* // --- SPOSÓB 2: ZADANIE 4 (Criteria API / Specifications) ---
-        // Alternatywne rozwiązanie, które też można odkomentować zamiast powyższego
-        Specification<Product> spec = Specification.where(ProductSpecifications.hasPhrase(phrase))
-                .and(ProductSpecifications.hasPriceBetween(minPrice, maxPrice))
-                .and(ProductSpecifications.hasCategory(categoryId));
-
-        // Uwaga: findAll(Specification) nie obsługuje automatycznie @EntityGraph w prosty sposób bez nadpisywania,
-        // więc przy wyłączonym OSIV (Zad 5) mogą wystąpić problemy z leniwym ładowaniem tagów/kategorii,
-        // chyba że dodamy fetch'e w samej specyfikacji.
-        // Dlatego w tym rozwiązaniu zalecam SPOSÓB 1 (SpEL) jako bezpieczniejszy dla Zadania 5.
-        // products = productRepository.findAll(spec);
-        */
-
-        // --- SPOSÓB 3: ZADANIE 1 (NamedQuery) ---
-        // Przykład użycia NamedQuery (tylko dla frazy, dla demonstracji w logach)
         if (phrase != null && !phrase.isEmpty()) {
             log.info("Test NamedQuery: Znaleziono " + productRepository.findByNameOrCategoryName(phrase).size() + " wyników.");
         }
