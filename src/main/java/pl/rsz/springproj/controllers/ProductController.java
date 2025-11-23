@@ -3,20 +3,19 @@ package pl.rsz.springproj.controllers;
 import jakarta.validation.Valid;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import pl.rsz.springproj.domain.Category;
-import pl.rsz.springproj.domain.Product;
-import pl.rsz.springproj.domain.ProductStatus;
-import pl.rsz.springproj.domain.Tag;
+import pl.rsz.springproj.domain.*;
 import pl.rsz.springproj.repositories.CategoryRepository;
 import pl.rsz.springproj.repositories.ProductRepository;
 import pl.rsz.springproj.repositories.TagRepository;
 import pl.rsz.springproj.validators.ProductValidator;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Controller
@@ -43,10 +42,11 @@ public class ProductController {
         binder.addValidators(new ProductValidator());
     }
 
+    // Główna metoda wyświetlająca listę - używa ZADANIA 3 (SpEL) lub ZADANIA 4 (Specifications)
     @GetMapping("/product-list")
     public String showProductList(
             @RequestParam(name = "phrase", required = false) String phrase,
-            @RequestParam(name = "minPrice", required = false, defaultValue = "0") Float minPrice,
+            @RequestParam(name = "minPrice", required = false) Float minPrice,
             @RequestParam(name = "maxPrice", required = false) Float maxPrice,
             @RequestParam(name = "categoryId", required = false) Long categoryId,
             Model model
@@ -54,24 +54,29 @@ public class ProductController {
         log.info("Wyświetlanie listy produktów z filtrami");
         List<Product> products;
 
-        if (phrase != null && !phrase.isEmpty() && maxPrice != null && minPrice < maxPrice) {
-            products = productRepository.findByNameContainingIgnoreCaseAndPriceBetween(
-                    phrase, minPrice, maxPrice);
-            log.info("Filtrowanie po frazie + cenie");
-        } else if (phrase != null && !phrase.isEmpty()) {
-            products = productRepository.findByNameContainingIgnoreCaseOrCategoryNameContainingIgnoreCase(phrase, phrase);
-            log.info("Filtrowanie po frazie");
-        } else if (maxPrice != null && minPrice < maxPrice) {
-            products = productRepository.findByPriceBetween(minPrice, maxPrice);
-            log.info("Filtrowanie po cenie");
-        } else if (categoryId != null) {
-            products = categoryRepository.findById(categoryId)
-                    .map(productRepository::findByCategory)
-                    .orElseGet(productRepository::findAll);
-            log.info("Filtrowanie po kategorii");
-        } else {
-            products = productRepository.findAll();
-            log.info("Filtrowanie brak!");
+        // --- SPOSÓB 1: ZADANIE 3 (SpEL + Obiekt Filtra) ---
+        // Tworzymy obiekt filtra z parametrów żądania
+        ProductFilter filter = new ProductFilter(phrase, minPrice, maxPrice, categoryId);
+        // Wywołujemy metodę z repozytorium używającą SpEL
+        products = productRepository.findWithFilter(filter);
+
+        /* // --- SPOSÓB 2: ZADANIE 4 (Criteria API / Specifications) ---
+        // Alternatywne rozwiązanie, które też można odkomentować zamiast powyższego
+        Specification<Product> spec = Specification.where(ProductSpecifications.hasPhrase(phrase))
+                .and(ProductSpecifications.hasPriceBetween(minPrice, maxPrice))
+                .and(ProductSpecifications.hasCategory(categoryId));
+
+        // Uwaga: findAll(Specification) nie obsługuje automatycznie @EntityGraph w prosty sposób bez nadpisywania,
+        // więc przy wyłączonym OSIV (Zad 5) mogą wystąpić problemy z leniwym ładowaniem tagów/kategorii,
+        // chyba że dodamy fetch'e w samej specyfikacji.
+        // Dlatego w tym rozwiązaniu zalecam SPOSÓB 1 (SpEL) jako bezpieczniejszy dla Zadania 5.
+        // products = productRepository.findAll(spec);
+        */
+
+        // --- SPOSÓB 3: ZADANIE 1 (NamedQuery) ---
+        // Przykład użycia NamedQuery (tylko dla frazy, dla demonstracji w logach)
+        if (phrase != null && !phrase.isEmpty()) {
+            log.info("Test NamedQuery: Znaleziono " + productRepository.findByNameOrCategoryName(phrase).size() + " wyników.");
         }
 
         model.addAttribute("products", products);
@@ -82,11 +87,19 @@ public class ProductController {
     public String showProductDetails(@RequestParam("id") Long productId, Model model) {
         Product product = productRepository.findById(productId).orElse(null);
         if (product != null) {
+            product.getTags().size();
             model.addAttribute("product", product);
             return "product-details";
         } else {
             return "redirect:/product-list";
         }
+    }
+
+    @GetMapping("/product/update-date")
+    @ResponseBody
+    public String updateDate(@RequestParam Long id) {
+        int updatedRows = productRepository.updateBestBeforeDate(id, LocalDate.now().plusYears(1));
+        return "Zaktualizowano datę dla " + updatedRows + " produktów.";
     }
 
     @GetMapping("/product-delete")

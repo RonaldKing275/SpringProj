@@ -11,15 +11,18 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
-
 import java.time.LocalDate;
-
 import java.util.Set;
 import java.util.HashSet;
 
-import pl.rsz.springproj.domain.Tag;
-import pl.rsz.springproj.repositories.TagRepository;
-
+// ZADANIE 1: Zapytanie nazwane
+// Wyszukuje frazę w nazwie produktu LUB w nazwie kategorii (ignorując wielkość liter)
+@NamedQuery(
+        name = "Product.findByNameOrCategoryName",
+        query = "SELECT p FROM Product p LEFT JOIN p.category c WHERE " +
+                "LOWER(p.name) LIKE LOWER(CONCAT('%', :phrase, '%')) OR " +
+                "LOWER(c.name) LIKE LOWER(CONCAT('%', :phrase, '%'))"
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -36,7 +39,8 @@ public class Product implements Serializable {
     private String name;
 
     @NotNull(message = "Musisz wybrać kategorię")
-    @ManyToOne
+    // ZADANIE 5: Zmiana na LAZY (domyślnie dla ManyToOne jest EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 
     @NumberFormat(pattern = "#.00")
@@ -57,9 +61,12 @@ public class Product implements Serializable {
     @Enumerated(EnumType.STRING)
     private ProductStatus status;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    // ZADANIE 5: Zmiana na LAZY (domyślnie dla ManyToMany jest LAZY, ale w Twoim kodzie było EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
 
-//    @Embedded
-//    private TagRepository tagi;
+    // Pomocnicza metoda do dodawania tagów
+    public Set<Tag> getTags() {
+        return tags;
+    }
 }
