@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>Lista produktów</title>
@@ -43,7 +44,16 @@
     </form>
 </fieldset>
 <hr>
-<p><a th:href="@{/product/add}">Dodaj nowy produkt</a></p>
+
+<p sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/product/add}">Dodaj nowy produkt</a>
+</p>
+
+<p>
+    <a th:href="@{/}">Menu Główne</a> |
+    <span sec:authorize="isAuthenticated()">Zalogowany jako: <b sec:authentication="name"></b></span>
+    <span sec:authorize="!isAuthenticated()"><a th:href="@{/login}">Zaloguj się</a></span>
+</p>
 
 <div th:if="${#lists.isEmpty(products)}">
     <p>Brak produktów w sklepie.</p>
@@ -60,7 +70,10 @@
         <th>W magazynie</th>
         <th>Status</th>
         <th>Wymiary (SxWxG)</th>
-        <th>Tagi</th> <th>Opcje</th>
+        <th>Tagi</th>
+        <th>Utworzył</th>
+        <th>Data utworzenia</th>
+        <th>Opcje</th>
     </tr>
     </thead>
     <tbody>
@@ -73,18 +86,17 @@
         <td th:text="${prod.inStock ? 'Tak' : 'Nie'}">Tak</td>
         <td th:text="${prod.status.description}">Dostępny</td>
         <td th:text="${{prod.dimensions}}">-</td>
-
         <td>
-            <span th:each="tag : ${prod.tags}" th:text="${tag.name}" style="display: block;">
-                Promocja
-            </span>
+            <span th:each="tag : ${prod.tags}" th:text="${tag.name}" style="display: block;">Promocja</span>
         </td>
+        <td th:text="${prod.createdBy}">Admin</td>
+        <td th:text="${prod.createdDate != null ? #temporals.format(prod.createdDate, 'yyyy-MM-dd HH:mm') : '-'}">Data</td>
         <td>
-            <a th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
-            |
-            <a th:href="@{/product/edit/{id}(id=${prod.id})}">Edytuj</a>
-            |
-            <a th:href="@{/product-delete(id=${prod.id})}">Usuń</a>
+            <a sec:authorize="hasAnyRole('USER', 'ADMIN')" th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
+            <span sec:authorize="hasRole('ADMIN')">
+                | <a th:href="@{/product/edit/{id}(id=${prod.id})}">Edytuj</a>
+                | <a th:href="@{/product-delete(id=${prod.id})}">Usuń</a>
+            </span>
         </td>
     </tr>
     </tbody>

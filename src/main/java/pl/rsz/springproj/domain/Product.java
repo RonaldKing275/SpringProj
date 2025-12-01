@@ -12,11 +12,16 @@ import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.HashSet;
 
-// ZADANIE 1: Zapytanie nazwane
-// Wyszukuje frazę w nazwie produktu LUB w nazwie kategorii (ignorując wielkość liter)
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 @NamedQuery(
         name = "Product.findByNameOrCategoryName",
         query = "SELECT p FROM Product p LEFT JOIN p.category c WHERE " +
@@ -27,6 +32,7 @@ import java.util.HashSet;
 @Setter
 @NoArgsConstructor
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Product implements Serializable {
 
     @Id
@@ -62,6 +68,20 @@ public class Product implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
+
+    @CreatedDate
+    @Column(updatable = false)
+    private LocalDateTime createdDate;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
+
+    @CreatedBy
+    @Column(updatable = false)
+    private String createdBy;
+
+    @LastModifiedBy
+    private String lastModifiedBy;
 
     public Set<Tag> getTags() {
         return tags;

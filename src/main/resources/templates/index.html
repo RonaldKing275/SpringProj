@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
 <head>
     <meta charset="UTF-8">
     <title>Strona Główna - Sklep Zoologiczny</title>
@@ -8,15 +9,23 @@
 <h1>Sklep zoologiczny</h1>
 <hr/>
 
-<h2>Strony:</h2>
+<div sec:authorize="isAuthenticated()">
+    <h3>Witaj, <span sec:authentication="name">User</span>!</h3>
+    <p>Twoje role: <span sec:authentication="principal.authorities"></span></p>
+
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="Wyloguj się"/>
+    </form>
+</div>
+
+<div sec:authorize="!isAuthenticated()">
+    <a th:href="@{/login}">Zaloguj się</a>
+</div>
+
+<hr/>
+<h2>Menu:</h2>
 <p>
     <a th:href="@{/product-list}">Przejdź do katalogu produktów</a>
 </p>
-
-<hr/>
-<p>
-    <a th:href="@{/unexisting-page}">Strona błędu</a>
-</p>
-
 </body>
 </html>
