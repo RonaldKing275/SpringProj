@@ -6,6 +6,7 @@ import org.springframework.data.domain.AuditorAware;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 
 import java.util.Optional;
 
@@ -18,7 +19,8 @@ public class JpaConfig {
         return () -> {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
             if (auth != null && auth.isAuthenticated()) {
-                return Optional.of(auth.getName());
+                var login = ((User)auth.getPrincipal()).getUsername();
+                return Optional.of(login);
             }
             return Optional.of("System");
         };
