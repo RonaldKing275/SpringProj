@@ -7,18 +7,21 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
-import pl.rsz.springproj.domain.Category;
 import pl.rsz.springproj.domain.Product;
 import pl.rsz.springproj.domain.ProductFilter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
+    @Override
+    @EntityGraph(attributePaths = {"category", "tags"})
+    Optional<Product> findById(Long id);
+
     @EntityGraph(attributePaths = {"category", "tags"})
     List<Product> findByNameOrCategoryName(@Param("phrase") String phrase);
-
 
     @Modifying
     @Transactional
