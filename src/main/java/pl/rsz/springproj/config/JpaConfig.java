@@ -20,7 +20,7 @@ public class JpaConfig {
             if (auth != null && auth.isAuthenticated() && !auth.getPrincipal().equals("anonymousUser")) {
                 return Optional.of(auth.getName());
             }
-            return Optional.of("System/Anonim");
+            return Optional.of("System");
         };
     }
 }
