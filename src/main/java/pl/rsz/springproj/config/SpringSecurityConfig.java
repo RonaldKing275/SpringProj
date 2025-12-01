@@ -24,19 +24,23 @@ public class SpringSecurityConfig {
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
+        var manager = new InMemoryUserDetailsManager();
+        User.UserBuilder userBuilder = User.builder();
 
-        UserDetails user = User.withUsername("user")
+        UserDetails user = userBuilder
+                .username("user")
                 .password(passwordEncoder.encode("user"))
                 .roles("USER")
                 .build();
 
-        UserDetails admin = User.withUsername("admin")
+        UserDetails admin = userBuilder
+                .username("admin")
                 .password(passwordEncoder.encode("admin"))
                 .roles("ADMIN")
                 .build();
 
-        UserDetails superUser = User.withUsername("superuser")
+        UserDetails superUser = userBuilder
+                .username("superuser")
                 .password(passwordEncoder.encode("superuser"))
                 .roles("USER", "ADMIN")
                 .build();

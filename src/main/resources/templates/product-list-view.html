@@ -72,7 +72,9 @@
         <th>Wymiary (SxWxG)</th>
         <th>Tagi</th>
         <th>Utworzył</th>
+        <th>Zmodyfikował</th>
         <th>Data utworzenia</th>
+        <th>Ostatnio zmodyfikowane</th>
         <th>Opcje</th>
     </tr>
     </thead>
@@ -90,7 +92,9 @@
             <span th:each="tag : ${prod.tags}" th:text="${tag.name}" style="display: block;">Promocja</span>
         </td>
         <td th:text="${prod.createdBy}">Admin</td>
+        <td th:text="${prod.lastModifiedBy}">Admin</td>
         <td th:text="${prod.createdDate != null ? #temporals.format(prod.createdDate, 'yyyy-MM-dd HH:mm') : '-'}">Data</td>
+        <td th:text="${prod.lastModifiedDate != null ? #temporals.format(prod.lastModifiedDate, 'yyyy-MM-dd HH:mm') : '-'}">Data</td>
         <td>
             <a sec:authorize="hasAnyRole('USER', 'ADMIN')" th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
             <span sec:authorize="hasRole('ADMIN')">
