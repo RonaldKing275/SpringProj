@@ -93,8 +93,8 @@
         </td>
         <td th:text="${prod.createdBy}">Admin</td>
         <td th:text="${prod.lastModifiedBy}">Admin</td>
-        <td th:text="${prod.createdDate != null ? #temporals.format(prod.createdDate, 'yyyy-MM-dd HH:mm') : '-'}">Data</td>
-        <td th:text="${prod.lastModifiedDate != null ? #temporals.format(prod.lastModifiedDate, 'yyyy-MM-dd HH:mm') : '-'}">Data</td>
+        <td th:text="${prod.createdDate != null ? #temporals.format(prod.createdDate, 'yyyy-MM-dd HH:mm:ss') : '-'}">Data</td>
+        <td th:text="${prod.lastModifiedDate != null ? #temporals.format(prod.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss') : '-'}">Data</td>
         <td>
             <a sec:authorize="hasAnyRole('USER', 'ADMIN')" th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
             <span sec:authorize="hasRole('ADMIN')">

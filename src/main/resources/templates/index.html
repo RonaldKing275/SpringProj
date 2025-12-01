@@ -14,12 +14,12 @@
     <p>Twoje role: <span sec:authentication="principal.authorities"></span></p>
 
     <form th:action="@{/logout}" method="post">
-        <input type="submit" value="Wyloguj się"/>
+        <input type="submit" value="Wyloguj"/>
     </form>
 </div>
 
 <div sec:authorize="!isAuthenticated()">
-    <a th:href="@{/login}">Zaloguj się</a>
+    <a th:href="@{/login}">Zaloguj</a>
 </div>
 
 <hr/>
