@@ -1,38 +1,36 @@
 package pl.rsz.springproj.domain;
 
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.HashSet;
+import java.util.Set;
 
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedBy;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity
+@EntityListeners(AuditingEntityListener.class)
+// NamedQuery (Zadanie z Lab 7)
 @NamedQuery(
         name = "Product.findByNameOrCategoryName",
         query = "SELECT p FROM Product p LEFT JOIN p.category c WHERE " +
                 "LOWER(p.name) LIKE LOWER(CONCAT('%', :phrase, '%')) OR " +
                 "LOWER(c.name) LIKE LOWER(CONCAT('%', :phrase, '%'))"
 )
-@Getter
-@Setter
-@NoArgsConstructor
-@Entity
-@EntityListeners(AuditingEntityListener.class)
 public class Product implements Serializable {
 
     @Id
@@ -59,6 +57,7 @@ public class Product implements Serializable {
 
     private boolean inStock;
 
+    // To pole jest wymagane przez plik Dimensions.java, który przywróciliśmy w Kroku 1
     @Embedded
     private Dimensions dimensions = new Dimensions();
 
@@ -69,6 +68,11 @@ public class Product implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
 
+    // === NOWE POLE DLA LAB 10 (Upload zdjęć) ===
+    // Jego brak powodował błąd Thymeleaf
+    private String imagePath;
+
+    // === Pola Audytowe (Lab 8) ===
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdDate;
@@ -82,10 +86,4 @@ public class Product implements Serializable {
 
     @LastModifiedBy
     private String lastModifiedBy;
-
-    private String imagePath;
-
-    public Set<Tag> getTags() {
-        return tags;
-    }
 }
