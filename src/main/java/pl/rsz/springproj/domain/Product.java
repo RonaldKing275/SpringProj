@@ -83,6 +83,8 @@ public class Product implements Serializable {
     @LastModifiedBy
     private String lastModifiedBy;
 
+    private String imagePath;
+
     public Set<Tag> getTags() {
         return tags;
     }

@@ -81,6 +81,12 @@
             <span class="error checkbox-item" th:if="${#fields.hasErrors('tags')}" th:errors="*{tags}"></span>
         </div>
     </div>
+
+    <div>
+        <label>Zdjęcie:</label>
+        <input type="file" name="imageFile" accept="image/png, image/jpeg" />
+    </div>
+
     <div>
         <input type="submit" th:value="#{label.product.submit}" />
     </div>

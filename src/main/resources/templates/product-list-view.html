@@ -37,6 +37,10 @@
             </select>
         </div>
 
+        <img th:if="${prod.imagePath != null}"
+             th:src="@{'/product-images/' + ${prod.id} + '/' + ${prod.imagePath}}"
+             width="100" />
+
         <div>
             <input type="submit" value="Filtruj" />
             <a th:href="@{/product-list}">Wyczyść</a>

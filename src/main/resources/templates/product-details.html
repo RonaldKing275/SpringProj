@@ -22,6 +22,11 @@
     <p>Wymiary (SxWxG): <span th:text="*{{dimensions}}">-</span></p>
 
     <p>Tagi: <span th:text="*{{tags}}">-</span></p>
+
+    <img th:if="${prod.imagePath != null}"
+         th:src="@{'/product-images/' + ${prod.id} + '/' + ${prod.imagePath}}"
+         width="100" />
+
 </div>
 
 <hr/>
