@@ -5,31 +5,57 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import pl.rsz.springproj.domain.*;
-import pl.rsz.springproj.repositories.CategoryRepository;
-import pl.rsz.springproj.repositories.ProductRepository;
-import pl.rsz.springproj.repositories.TagRepository;
+import pl.rsz.springproj.repositories.*;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Configuration
 @Log4j2
 public class DataInitializer {
 
-    @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
+    @Autowired private ProductRepository productRepository;
+    @Autowired private CategoryRepository categoryRepository;
+    @Autowired private TagRepository tagRepository;
 
-    @Autowired
-    private TagRepository tagRepository;
-
-    private int count = 0;
+    // Nowe repozytoria i encoder
+    @Autowired private RoleRepository roleRepository;
+    @Autowired private UserRepository userRepository;
+    @Autowired private PasswordEncoder passwordEncoder;
 
     @Bean
     public InitializingBean initDatabase() {
         return () -> {
 
+            // 1. Inicjalizacja Ról
+            if (roleRepository.count() == 0) {
+                roleRepository.save(new Role("ROLE_USER"));
+                roleRepository.save(new Role("ROLE_ADMIN"));
+            }
+
+            Role roleUser = roleRepository.findByName("ROLE_USER");
+            Role roleAdmin = roleRepository.findByName("ROLE_ADMIN");
+
+            // 2. Inicjalizacja Użytkowników
+            if (userRepository.count() == 0) {
+                // Admin
+                User admin = new User();
+                admin.setUsername("admin");
+                admin.setPassword(passwordEncoder.encode("admin"));
+                admin.setRoles(Set.of(roleAdmin, roleUser));
+                userRepository.save(admin);
+
+                // User
+                User user = new User();
+                user.setUsername("user");
+                user.setPassword(passwordEncoder.encode("user"));
+                user.setRoles(Set.of(roleUser));
+                userRepository.save(user);
+            }
+
+            // 3. Twoja stara inicjalizacja Kategorii i Tagów
             if (categoryRepository.count() == 0) {
                 categoryRepository.save(new Category("Pokarm"));
                 categoryRepository.save(new Category("Akcesoria"));
@@ -43,6 +69,7 @@ public class DataInitializer {
                 tagRepository.save(new Tag("Inne"));
             }
 
+            // Pobieranie do produktów
             Category pokarm = categoryRepository.findAll().get(0);
             Category akcesoria = categoryRepository.findAll().get(1);
             Tag tagPies = tagRepository.findAll().get(0);
@@ -87,11 +114,6 @@ public class DataInitializer {
                 p4.setDimensions(new Dimensions(12f, 12f, 12f));
                 p4.setStatus(ProductStatus.AVAILABLE);
                 p4.getTags().add(tagInne);
-
-                // TODO:
-                // Dodać wszystkie produkty na raz
-
-                //productRepository.saveAll();
 
                 productRepository.save(p1);
                 productRepository.save(p2);

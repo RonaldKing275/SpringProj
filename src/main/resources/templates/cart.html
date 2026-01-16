@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Koszyk</title></head>
+<body>
+<h1>Twój Koszyk</h1>
+<div th:if="${items.empty}">Koszyk jest pusty</div>
+<table th:if="${!items.empty}" border="1">
+    <tr><th>Produkt</th><th>Ilość</th><th>Cena</th></tr>
+    <tr th:each="item : ${items}">
+        <td th:text="${item.product.name}">Produkt</td>
+        <td th:text="${item.quantity}">1</td>
+        <td th:text="${item.price}">10.00</td>
+    </tr>
+</table>
+<p>Razem: <span th:text="${totalPrice}">0</span> PLN</p>
+<a th:href="@{/order/checkout}">Złóż zamówienie</a> |
+<a th:href="@{/cart/clear}">Wyczyść</a> |
+<a th:href="@{/product-list}">Kontynuuj zakupy</a>
+</body>
+</html>

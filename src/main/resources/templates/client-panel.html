@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Moje Zamówienia</title></head>
+<body>
+<h1>Panel Klienta</h1>
+<p>Witaj, <span th:text="${#authentication.name}">User</span>!</p>
+
+<h2>Twoje zamówienia</h2>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Data</th>
+        <th>Kwota</th>
+        <th>Status</th>
+    </tr>
+    <tr th:each="order : ${orders}">
+        <td th:text="${order.id}">1</td>
+        <td th:text="${order.orderDate}">2025-01-01</td>
+        <td th:text="${order.totalPrice} + ' PLN'">100 PLN</td>
+        <td th:text="${order.status}">NEW</td>
+    </tr>
+</table>
+<p><a th:href="@{/product-list}">Wróć do sklepu</a></p>
+</body>
+</html>

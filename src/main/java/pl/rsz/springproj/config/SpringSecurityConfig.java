@@ -3,53 +3,36 @@ package pl.rsz.springproj.config;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import pl.rsz.springproj.service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig {
+
+    private final CustomUserDetailsService customUserDetailsService;
+
+    public SpringSecurityConfig(CustomUserDetailsService customUserDetailsService) {
+        this.customUserDetailsService = customUserDetailsService;
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    // Konfiguracja dostawcy uwierzytelniania opartego na bazie danych
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        var manager = new InMemoryUserDetailsManager();
-        User.UserBuilder userBuilder = User.builder();
-
-        UserDetails user = userBuilder
-                .username("user")
-                .password(passwordEncoder.encode("user"))
-                .roles("USER")
-                .build();
-
-        UserDetails admin = userBuilder
-                .username("admin")
-                .password(passwordEncoder.encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails superUser = userBuilder
-                .username("superuser")
-                .password(passwordEncoder.encode("superuser"))
-                .roles("USER", "ADMIN")
-                .build();
-
-        manager.createUser(user);
-        manager.createUser(admin);
-        manager.createUser(superUser);
-
-        return manager;
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(customUserDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
     }
 
     @Bean
@@ -57,9 +40,11 @@ public class SpringSecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/", "/index", "/product-list").permitAll()
-                        .requestMatchers("/product-details").hasRole("USER")
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/product-images/**").permitAll() // + product-images
+                        .requestMatchers("/", "/index", "/product-list", "/register").permitAll() // Dostępne dla wszystkich
+                        .requestMatchers("/cart/**").permitAll() // Koszyk dostępny dla wszystkich
+                        .requestMatchers("/order/checkout", "/order/submit", "/panel").authenticated() // Zamawianie tylko dla zalogowanych
+                        .requestMatchers("/product-details").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/product/add", "/product/edit/**", "/product/save", "/product-delete").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
@@ -75,10 +60,14 @@ public class SpringSecurityConfig {
                 .permitAll()
         );
 
+        // H2 Console fix
         http.csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()));
         http.headers(headers -> headers.frameOptions(headersConfig -> headersConfig.sameOrigin()));
 
         http.exceptionHandling((config) -> config.accessDeniedPage("/error403"));
+
+        // Rejestracja naszego providera
+        http.authenticationProvider(authenticationProvider());
 
         return http.build();
     }

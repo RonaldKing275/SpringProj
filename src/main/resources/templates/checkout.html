@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Kasa</title></head>
+<body>
+<h1>Podsumowanie zamówienia</h1>
+<p>Do zapłaty: <span th:text="${total}"></span> PLN</p>
+
+<form th:action="@{/order/submit}" method="post" th:object="${address}">
+    <h3>Adres dostawy</h3>
+    Ulica: <input type="text" th:field="*{street}" required/><br/>
+    Miasto: <input type="text" th:field="*{city}" required/><br/>
+    Kod pocztowy: <input type="text" th:field="*{zipCode}" required/><br/>
+    <input type="submit" value="Kupuję i płacę"/>
+</form>
+</body>
+</html>

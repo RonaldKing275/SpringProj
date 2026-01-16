@@ -104,8 +104,12 @@
         <td th:text="${prod.lastModifiedBy}">Admin</td>
         <td th:text="${prod.createdDate != null ? #temporals.format(prod.createdDate, 'yyyy-MM-dd HH:mm:ss') : '-'}">Data</td>
         <td th:text="${prod.lastModifiedDate != null ? #temporals.format(prod.lastModifiedDate, 'yyyy-MM-dd HH:mm:ss') : '-'}">Data</td>
+        <form th:action="@{/cart/add}" method="post" style="display:inline;">
+            <input type="hidden" name="productId" th:value="${prod.id}"/>
+            <input type="submit" value="Do koszyka"/>
+        </form>
         <td>
-            <a sec:authorize="hasAnyRole('USER', 'ADMIN')" th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
+            <a sec:authorize="hasAnyRole('USER')" th:href="@{/product-details(id=${prod.id})}">Szczegóły</a>
             <span sec:authorize="hasRole('ADMIN')">
                 | <a th:href="@{/product/edit/{id}(id=${prod.id})}">Edytuj</a>
                 | <a th:href="@{/product-delete(id=${prod.id})}">Usuń</a>
