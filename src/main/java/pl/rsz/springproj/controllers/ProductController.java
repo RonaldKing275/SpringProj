@@ -12,6 +12,7 @@ import pl.rsz.springproj.domain.*;
 import pl.rsz.springproj.repositories.CategoryRepository;
 import pl.rsz.springproj.repositories.TagRepository;
 import pl.rsz.springproj.service.ProductService; // Używamy serwisu
+import pl.rsz.springproj.service.ReviewService;
 import pl.rsz.springproj.validators.ProductValidator;
 
 import java.util.List;
@@ -22,12 +23,14 @@ public class ProductController {
     private final ProductService productService; // Zamiast Repository
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
+    private final ReviewService reviewService;
 
     @Autowired
-    public ProductController(ProductService productService, CategoryRepository categoryRepository, TagRepository tagRepository) {
+    public ProductController(ProductService productService, CategoryRepository categoryRepository, TagRepository tagRepository, ReviewService reviewService) {
         this.productService = productService;
         this.categoryRepository = categoryRepository;
         this.tagRepository = tagRepository;
+        this.reviewService = reviewService;
     }
 
     @InitBinder
@@ -44,8 +47,11 @@ public class ProductController {
 
     @GetMapping("/product-details")
     public String showProductDetails(@RequestParam("id") Long productId, Model model) {
-        Product product = productService.getProductById(productId); // Serwis rzuci wyjątek jak nie znajdzie
+        Product product = productService.getProductById(productId);
         model.addAttribute("product", product);
+        model.addAttribute("reviews", reviewService.getReviewsForProduct(productId));
+        model.addAttribute("newReview", new Review());
+
         return "product-details";
     }
 

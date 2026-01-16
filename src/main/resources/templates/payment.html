@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><title>Płatność</title></head>
+<body>
+<h1>Opłać zamówienie nr: <span th:text="${orderId}"></span></h1>
+
+<form th:action="@{/payment/process}" method="post">
+    <input type="hidden" name="orderId" th:value="${orderId}" />
+
+    <h3>Wybierz metodę płatności:</h3>
+    <label><input type="radio" name="method" value="BLIK" checked> BLIK</label><br>
+    <label><input type="radio" name="method" value="KARTA"> Karta płatnicza</label><br>
+    <label><input type="radio" name="method" value="PRZELEW"> Przelew tradycyjny</label><br><br>
+
+    <button type="submit">Zapłać teraz</button>
+</form>
+
+<p><a th:href="@{/panel}">Anuluj</a></p>
+</body>
+</html>

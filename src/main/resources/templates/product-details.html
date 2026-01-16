@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>Szczegóły produktu</title>
@@ -32,6 +32,46 @@
 
 <hr/>
 <a th:href="@{/product-list}">Powrót do listy</a>
+
+<hr>
+<h3>Opinie użytkowników</h3>
+
+<div th:each="review : ${reviews}" style="border-bottom: 1px solid #ddd; margin-bottom: 10px;">
+    <p>
+        <strong th:text="${review.author.username}">User</strong>
+        Ocena: <span th:text="${review.rating}">5</span>/5
+        <small th:text="${#temporals.format(review.createdDate, 'yyyy-MM-dd HH:mm')}"></small>
+    </p>
+    <p th:text="${review.content}">Treść opinii</p>
+</div>
+
+<div th:if="${#lists.isEmpty(reviews)}">
+    <p>Brak opinii. Bądź pierwszy!</p>
+</div>
+
+<div sec:authorize="isAuthenticated()" style="margin-top: 20px; background: #f9f9f9; padding: 15px;">
+    <h4>Dodaj opinię</h4>
+    <form th:action="@{/review/add}" method="post" th:object="${newReview}">
+        <input type="hidden" name="productId" th:value="${product.id}" />
+
+        <label>Ocena (1-5):</label>
+        <select th:field="*{rating}">
+            <option value="5">5 - Super</option>
+            <option value="4">4 - Dobry</option>
+            <option value="3">3 - Średni</option>
+            <option value="2">2 - Słaby</option>
+            <option value="1">1 - Dramat</option>
+        </select><br><br>
+
+        <label>Treść:</label><br>
+        <textarea th:field="*{content}" rows="3" cols="50"></textarea><br>
+
+        <button type="submit">Wyślij opinię</button>
+    </form>
+</div>
+<div sec:authorize="!isAuthenticated()">
+    <p><a th:href="@{/login}">Zaloguj się</a>, aby dodać opinię.</p>
+</div>
 
 </body>
 </html>
