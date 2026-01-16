@@ -1,26 +1,56 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head><title>Moje Zamówienia</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Moje Zamówienia</title>
+</head>
 <body>
 <h1>Panel Klienta</h1>
 <p>Witaj, <span th:text="${#authentication.name}">User</span>!</p>
 
+<p>
+    <a th:href="@{/product-list}">Wróć do sklepu</a> |
+    <a th:href="@{/cart}">Koszyk</a>
+</p>
+
 <h2>Twoje zamówienia</h2>
-<table border="1">
+
+<div th:if="${#lists.isEmpty(orders)}">
+    <p>Nie złożyłeś jeszcze żadnych zamówień.</p>
+</div>
+
+<table border="1" th:unless="${#lists.isEmpty(orders)}">
+    <thead>
     <tr>
         <th>ID</th>
         <th>Data</th>
         <th>Kwota</th>
         <th>Status</th>
-    </tr>
+        <th>Akcje</th> </tr>
+    </thead>
+    <tbody>
     <tr th:each="order : ${orders}">
         <td th:text="${order.id}">1</td>
-        <td th:text="${order.orderDate}">2025-01-01</td>
-        <td th:text="${order.totalPrice} + ' PLN'">100 PLN</td>
-        <td th:text="${order.status}">NEW</td>
+        <td th:text="${#temporals.format(order.orderDate, 'yyyy-MM-dd HH:mm')}">2025-01-01</td>
+        <td th:text="${#numbers.formatDecimal(order.totalPrice, 1, 2, 'COMMA')} + ' PLN'">100,00 PLN</td>
+
+        <td th:switch="${order.status}">
+            <span th:case="'NEW'" style="color: blue; font-weight: bold;">NOWE</span>
+            <span th:case="'PAID'" style="color: green; font-weight: bold;">OPŁACONE</span>
+            <span th:case="*" th:text="${order.status}">STATUS</span>
+        </td>
+
+        <td>
+            <a th:if="${order.status == 'NEW'}"
+               th:href="@{/payment/pay/{id}(id=${order.id})}"
+               style="background-color: #4CAF50; color: white; padding: 5px 10px; text-decoration: none; border-radius: 3px;">
+                OPŁAĆ TERAZ
+            </a>
+            <span th:if="${order.status == 'PAID'}">Gotowe</span>
+        </td>
     </tr>
+    </tbody>
 </table>
 
-<p><a th:href="@{/product-list}">Wróć do sklepu</a></p>
 </body>
 </html>

@@ -33,7 +33,7 @@ public class ProductController {
         this.reviewService = reviewService;
     }
 
-    @InitBinder
+    @InitBinder("product")
     public void initBinder(WebDataBinder binder) {
         binder.addValidators(new ProductValidator());
     }

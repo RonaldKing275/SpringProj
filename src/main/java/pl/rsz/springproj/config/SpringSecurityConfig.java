@@ -41,6 +41,8 @@ public class SpringSecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/product-images/**").permitAll() // + product-images
+                        .requestMatchers("/", "/index", "/product-list", "/login", "/register").permitAll()
+                        .requestMatchers("/cart/**").permitAll()
                         .requestMatchers("/", "/index", "/product-list", "/register").permitAll() // Dostępne dla wszystkich
                         .requestMatchers("/cart/**").permitAll() // Koszyk dostępny dla wszystkich
                         .requestMatchers("/order/checkout", "/order/submit", "/panel").authenticated() // Zamawianie tylko dla zalogowanych
