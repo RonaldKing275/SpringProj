@@ -16,7 +16,7 @@
 <body>
 <h1>Formularz produktu</h1>
 
-<form th:method="POST" th:object="${product}" th:action="@{/product/save}">
+<form th:action="@{/product/save}" th:object="${product}" method="post" enctype="multipart/form-data">
 
     <input type="hidden" th:field="*{id}" />
 

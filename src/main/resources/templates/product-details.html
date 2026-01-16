@@ -9,6 +9,7 @@
 
 <div th:object="${product}">
     <p>ID: <span th:text="*{id}">1</span></p>
+
     <p>Nazwa: <span th:text="*{name}">Nazwa produktu</span></p>
 
     <p>Kategoria: <span th:text="*{category.name}">Kategoria</span></p>
@@ -23,9 +24,9 @@
 
     <p>Tagi: <span th:text="*{{tags}}">-</span></p>
 
-    <img th:if="${prod.imagePath != null}"
-         th:src="@{'/product-images/' + ${prod.id} + '/' + ${prod.imagePath}}"
-         width="100" />
+    <img th:if="${product.imagePath != null}"
+         th:src="@{'/product-images/' + ${product.id} + '/' + ${product.imagePath}}"
+         width="300" />
 
 </div>
 
