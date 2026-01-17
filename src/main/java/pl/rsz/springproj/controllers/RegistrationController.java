@@ -29,10 +29,10 @@ public class RegistrationController {
                 throw new RuntimeException("Hasła nie są identyczne");
             }
             userService.registerUser(userDto);
-            return "redirect:/login?registered"; // Przekierowanie po sukcesie
+            return "redirect:/login?registered";
         } catch (RuntimeException ex) {
             model.addAttribute("error", ex.getMessage());
-            model.addAttribute("user", userDto); // Żeby nie czyściło formularza
+            model.addAttribute("user", userDto);
             return "register";
         }
     }

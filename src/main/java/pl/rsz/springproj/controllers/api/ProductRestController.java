@@ -19,16 +19,14 @@ public class ProductRestController {
         this.productService = productService;
     }
 
-    // GET - Lista wszystkich (jako DTO)
     @GetMapping
     public ResponseEntity<List<ProductDTO>> getAllProducts() {
         List<ProductDTO> dtos = productService.getAllProducts().stream()
-                .map(ProductDTO::fromEntity) // Użycie metody konwertującej z DTO
+                .map(ProductDTO::fromEntity)
                 .collect(Collectors.toList());
         return ResponseEntity.ok(dtos);
     }
 
-    // GET - Pojedynczy produkt
     @GetMapping("/{id}")
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
         try {
@@ -38,6 +36,4 @@ public class ProductRestController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    // Możesz dodać POST, PUT, DELETE analogicznie...
 }

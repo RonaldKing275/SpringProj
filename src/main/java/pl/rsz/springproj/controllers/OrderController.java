@@ -25,38 +25,29 @@ public class OrderController {
         this.userRepository = userRepository;
     }
 
-    // Ten endpoint wyświetla formularz zamówienia (checkout.html)
     @GetMapping("/order/checkout")
     public String checkout(Model model) {
-        // Jeśli koszyk jest pusty, przekieruj do sklepu
         if (cartService.getItems().isEmpty()) {
             return "redirect:/product-list";
         }
 
-        // Przekazujemy pusty obiekt adresu do formularza i sumę do zapłaty
         model.addAttribute("address", new Address());
         model.addAttribute("total", cartService.getTotal());
 
-        return "checkout"; // Szuka pliku checkout.html w templates
+        return "checkout";
     }
 
-    // Ten endpoint odbiera dane z formularza i składa zamówienie
     @PostMapping("/order/submit")
     public String submitOrder(Address address, @AuthenticationPrincipal UserDetails userDetails) {
-        // Pobieramy aktualnie zalogowanego użytkownika z bazy
         User user = userRepository.findByUsername(userDetails.getUsername());
 
-        // Zlecamy serwisowi stworzenie zamówienia
         orderService.placeOrder(user, address, cartService.getItems());
 
-        // Czyścimy koszyk po udanym zakupie
         cartService.clear();
 
-        // Przekierowujemy do panelu klienta, żeby zobaczył swoje zamówienie
         return "redirect:/panel";
     }
 
-    // Ten endpoint wyświetla historię zamówień (client-panel.html)
     @GetMapping("/panel")
     public String clientPanel(Model model, @AuthenticationPrincipal UserDetails userDetails) {
         model.addAttribute("orders", orderService.getUserOrders(userDetails.getUsername()));

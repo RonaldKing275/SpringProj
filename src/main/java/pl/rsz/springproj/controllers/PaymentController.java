@@ -20,7 +20,7 @@ public class PaymentController {
     @GetMapping("/payment/pay/{orderId}")
     public String showPaymentPage(@PathVariable Long orderId, Model model) {
         model.addAttribute("orderId", orderId);
-        return "payment"; // Nowy widok
+        return "payment";
     }
 
     @PostMapping("/payment/process")
