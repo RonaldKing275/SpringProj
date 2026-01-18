@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "users") // 'user' to słowo kluczowe w SQL, bezpieczniej użyć 'users'
+@Table(name = "users")
 @Data
 @NoArgsConstructor
 public class User {

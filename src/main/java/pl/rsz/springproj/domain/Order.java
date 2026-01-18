@@ -29,7 +29,7 @@ public class Order {
     @OneToMany(cascade = CascadeType.ALL)
     private List<OrderItem> items = new ArrayList<>();
 
-    private String status; // np. "NEW", "COMPLETED"
+    private String status;
 
     @CreatedDate
     private LocalDateTime orderDate;

@@ -13,7 +13,7 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String paymentMethod; // np. "BLIK", "KARTA"
+    private String paymentMethod;
     private LocalDateTime paymentDate;
     private boolean isPaid;
 

@@ -14,7 +14,7 @@ public class Review {
     private Long id;
 
     private String content;
-    private int rating; // 1-5
+    private int rating;
 
     @ManyToOne
     private User author;

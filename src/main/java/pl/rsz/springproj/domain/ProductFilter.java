@@ -11,5 +11,5 @@ public class ProductFilter {
     private String phrase;
     private Float minPrice;
     private Float maxPrice;
-    private Long categoryId; // Dodatkowe pole pomocnicze
+    private Long categoryId;
 }

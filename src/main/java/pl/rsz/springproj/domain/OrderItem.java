@@ -16,7 +16,7 @@ public class OrderItem {
     private Product product;
 
     private int quantity;
-    private float price; // Cena w momencie zakupu (ważne!)
+    private float price;
 
     public OrderItem(Product product, int quantity) {
         this.product = product;

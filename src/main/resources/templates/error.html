@@ -1,43 +1,53 @@
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Domyślna strona błędu</title>
+    <title>Błąd</title>
 </head>
 <body>
 <h1>Coś poszło nie tak</h1>
-<table>
-    <tr>
-        <td>Date</td>
-        <td th:text="${timestamp}"/>
-    </tr>
-    <tr>
-        <td>Path</td>
-        <td th:text="${path}"/>
-    </tr>
-    <tr>
-        <td>Error</td>
-        <td th:text="${error}"/>
-    </tr>
-    <tr>
-        <td>Status</td>
-        <td th:text="${status}"/>
-    </tr>
-    <tr>
-        <td>Message</td>
-        <td th:text="${message}"/>
-    </tr>
-    <tr>
-        <td>Exception</td>
-        <td th:text="${exception}"/>
-    </tr>
-    <tr>
-        <td>Trace</td>
-        <td>
-            <pre th:text="${trace}"/>
-        </td>
-    </tr>
-</table>
-</body>
 
+<div th:if="${errorMessage}" class="error-box">
+    <p th:text="${errorMessage}">Treść błędu z kontrolera</p>
+</div>
+
+<div th:unless="${errorMessage}">
+    <p>Wystąpił nieoczekiwany błąd systemowy:</p>
+    <table>
+        <tr>
+            <td>Date</td>
+            <td th:text="${timestamp}"></td>
+        </tr>
+        <tr>
+            <td>Path</td>
+            <td th:text="${path}"></td>
+        </tr>
+        <tr>
+            <td>Error</td>
+            <td th:text="${error}"></td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td th:text="${status}"></td>
+        </tr>
+        <tr>
+            <td>Message</td>
+            <td th:text="${message}"></td>
+        </tr>
+        <tr th:if="${trace}">
+            <td>Trace</td>
+            <td>
+                <pre th:text="${trace}"></pre>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<br>
+<p>
+    <a th:href="@{/}">Wróć do strony głównej</a>
+    <span th:if="${errorMessage}"> | <a href="javascript:history.back()">Wróć do poprzedniej strony</a></span>
+</p>
+
+</body>
 </html>

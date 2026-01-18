@@ -16,7 +16,9 @@ import org.springframework.format.annotation.NumberFormat;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -24,7 +26,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-// NamedQuery (Zadanie z Lab 7)
 @NamedQuery(
         name = "Product.findByNameOrCategoryName",
         query = "SELECT p FROM Product p LEFT JOIN p.category c WHERE " +
@@ -57,7 +58,6 @@ public class Product implements Serializable {
 
     private boolean inStock;
 
-    // To pole jest wymagane przez plik Dimensions.java, który przywróciliśmy w Kroku 1
     @Embedded
     private Dimensions dimensions = new Dimensions();
 
@@ -68,11 +68,8 @@ public class Product implements Serializable {
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Tag> tags = new HashSet<>();
 
-    // === NOWE POLE DLA LAB 10 (Upload zdjęć) ===
-    // Jego brak powodował błąd Thymeleaf
     private String imagePath;
 
-    // === Pola Audytowe (Lab 8) ===
     @CreatedDate
     @Column(updatable = false)
     private LocalDateTime createdDate;
@@ -86,4 +83,7 @@ public class Product implements Serializable {
 
     @LastModifiedBy
     private String lastModifiedBy;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.REMOVE)
+    private List<Review> reviews = new ArrayList<>();
 }

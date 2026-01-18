@@ -53,7 +53,7 @@
     <a th:href="@{/}">Menu Główne</a> |
     <a th:href="@{/cart}">Twój Koszyk</a> |
 
-    <a sec:authorize="isAuthenticated()" th:href="@{/panel}">Moje zamówienia</a> |
+    <a sec:authorize="isAuthenticated()" th:href="@{/panel}">Moje zamówienia | </a>
 
     <span sec:authorize="isAuthenticated()">Zalogowany jako: <b sec:authentication="name"></b></span>
     <span sec:authorize="!isAuthenticated()"><a th:href="@{/login}">Zaloguj się</a></span>
