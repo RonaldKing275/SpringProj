@@ -10,7 +10,7 @@ public interface ProductService {
     List<Product> getAllProducts();
     List<Product> getProductsWithFilter(ProductFilter filter);
     Product getProductById(Long id);
-    void saveProduct(Product product, MultipartFile imageFile); // Dodajemy od razu obsługę pliku z Lab 10
+    void saveProduct(Product product, MultipartFile imageFile);
     void deleteProduct(Long id);
     void updateBestBeforeDate(Long id);
 }

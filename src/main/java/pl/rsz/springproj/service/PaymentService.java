@@ -32,7 +32,6 @@ public class PaymentService {
 
         paymentRepository.save(payment);
 
-        // Aktualizacja statusu zamówienia
         order.setStatus("PAID");
         orderRepository.save(order);
     }

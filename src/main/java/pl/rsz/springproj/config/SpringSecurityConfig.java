@@ -26,7 +26,6 @@ public class SpringSecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // Konfiguracja dostawcy uwierzytelniania opartego na bazie danych
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -40,12 +39,12 @@ public class SpringSecurityConfig {
         http
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers("/css/**", "/js/**", "/images/**", "/product-images/**").permitAll() // + product-images
+                        .requestMatchers("/css/**", "/js/**", "/images/**", "/product-images/**").permitAll()
                         .requestMatchers("/", "/index", "/product-list", "/login", "/register").permitAll()
                         .requestMatchers("/cart/**").permitAll()
-                        .requestMatchers("/", "/index", "/product-list", "/register").permitAll() // Dostępne dla wszystkich
-                        .requestMatchers("/cart/**").permitAll() // Koszyk dostępny dla wszystkich
-                        .requestMatchers("/order/checkout", "/order/submit", "/panel").authenticated() // Zamawianie tylko dla zalogowanych
+                        .requestMatchers("/", "/index", "/product-list", "/register").permitAll()
+                        .requestMatchers("/cart/**").permitAll()
+                        .requestMatchers("/order/checkout", "/order/submit", "/panel").authenticated()
                         .requestMatchers("/product-details").hasAnyRole("USER", "ADMIN")
                         .requestMatchers("/product/add", "/product/edit/**", "/product/save", "/product-delete").hasRole("ADMIN")
                         .anyRequest().authenticated()
@@ -62,13 +61,11 @@ public class SpringSecurityConfig {
                 .permitAll()
         );
 
-        // H2 Console fix
         http.csrf(csrf -> csrf.ignoringRequestMatchers(PathRequest.toH2Console()));
         http.headers(headers -> headers.frameOptions(headersConfig -> headersConfig.sameOrigin()));
 
         http.exceptionHandling((config) -> config.accessDeniedPage("/error403"));
 
-        // Rejestracja naszego providera
         http.authenticationProvider(authenticationProvider());
 
         return http.build();

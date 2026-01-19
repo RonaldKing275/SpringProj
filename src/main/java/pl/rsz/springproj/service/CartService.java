@@ -17,7 +17,6 @@ public class CartService {
     private List<OrderItem> items = new ArrayList<>();
 
     public void addToCart(Product product) {
-        // Sprawdź czy już jest, jak tak to zwiększ ilość
         Optional<OrderItem> existing = items.stream().filter(i -> i.getProduct().getId().equals(product.getId())).findFirst();
         if (existing.isPresent()) {
             existing.get().setQuantity(existing.get().getQuantity() + 1);
@@ -28,5 +27,7 @@ public class CartService {
 
     public List<OrderItem> getItems() { return items; }
     public void clear() { items.clear(); }
-    public float getTotal() { return (float) items.stream().mapToDouble(i -> i.getPrice() * i.getQuantity()).sum(); }
+    public float getTotal() {
+        return (float) items.stream().mapToDouble(i -> i.getPrice() * i.getQuantity()).sum();
+    }
 }

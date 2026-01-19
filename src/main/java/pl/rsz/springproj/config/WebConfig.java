@@ -28,26 +28,23 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addFormatter(new DateFormatter("yyyy-MM-dd"));
     }
 
-    // === LAB 10: Mapowanie zasobów (zdjęć) ===
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // Mapuje URL /product-images/** na fizyczny katalog uploads/products/
         registry.addResourceHandler("/product-images/**")
                 .addResourceLocations("file:uploads/products/");
     }
 
-    // === LAB 10: Internacjonalizacja (I18n) ===
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(new Locale("pl")); // Domyślnie Polski
+        slr.setDefaultLocale(new Locale("pl"));
         return slr;
     }
 
     @Bean
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
-        lci.setParamName("lang"); // Zmiana języka przez ?lang=en
+        lci.setParamName("lang");
         return lci;
     }
 

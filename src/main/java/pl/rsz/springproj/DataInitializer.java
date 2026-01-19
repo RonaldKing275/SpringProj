@@ -20,7 +20,6 @@ public class DataInitializer {
     @Autowired private CategoryRepository categoryRepository;
     @Autowired private TagRepository tagRepository;
 
-    // Nowe repozytoria i encoder
     @Autowired private RoleRepository roleRepository;
     @Autowired private UserRepository userRepository;
     @Autowired private PasswordEncoder passwordEncoder;
@@ -29,7 +28,6 @@ public class DataInitializer {
     public InitializingBean initDatabase() {
         return () -> {
 
-            // 1. Inicjalizacja Ról
             if (roleRepository.count() == 0) {
                 roleRepository.save(new Role("ROLE_USER"));
                 roleRepository.save(new Role("ROLE_ADMIN"));
@@ -38,16 +36,13 @@ public class DataInitializer {
             Role roleUser = roleRepository.findByName("ROLE_USER");
             Role roleAdmin = roleRepository.findByName("ROLE_ADMIN");
 
-            // 2. Inicjalizacja Użytkowników
             if (userRepository.count() == 0) {
-                // Admin
                 User admin = new User();
                 admin.setUsername("admin");
                 admin.setPassword(passwordEncoder.encode("admin"));
                 admin.setRoles(Set.of(roleAdmin, roleUser));
                 userRepository.save(admin);
 
-                // User
                 User user = new User();
                 user.setUsername("user");
                 user.setPassword(passwordEncoder.encode("user"));
@@ -55,7 +50,6 @@ public class DataInitializer {
                 userRepository.save(user);
             }
 
-            // 3. Twoja stara inicjalizacja Kategorii i Tagów
             if (categoryRepository.count() == 0) {
                 categoryRepository.save(new Category("Pokarm"));
                 categoryRepository.save(new Category("Akcesoria"));
@@ -69,7 +63,6 @@ public class DataInitializer {
                 tagRepository.save(new Tag("Inne"));
             }
 
-            // Pobieranie do produktów
             Category pokarm = categoryRepository.findAll().get(0);
             Category akcesoria = categoryRepository.findAll().get(1);
             Tag tagPies = tagRepository.findAll().get(0);

@@ -16,17 +16,13 @@ import java.util.List;
 @Transactional
 public class OrderServiceImpl {
 
-    // === 1. Deklaracja pól repozytoriów ===
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
 
-    // === 2. Wstrzykiwanie przez konstruktor ===
     public OrderServiceImpl(OrderRepository orderRepository, UserRepository userRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
     }
-
-    // === 3. Metody biznesowe ===
 
     public void placeOrder(User user, Address address, List<OrderItem> cartItems) {
         Order order = new Order();
@@ -34,7 +30,6 @@ public class OrderServiceImpl {
         order.setAddress(address);
         order.setStatus("NEW");
 
-        // Tworzymy nową listę pozycji, aby nie modyfikować koszyka w sesji bezpośrednio
         order.setItems(new ArrayList<>(cartItems));
 
         order.calculateTotal();
@@ -43,10 +38,7 @@ public class OrderServiceImpl {
     }
 
     public List<Order> getUserOrders(String username) {
-        // Teraz zmienna userRepository jest widoczna dzięki deklaracji na górze
         User user = userRepository.findByUsername(username);
-
-        // Teraz zmienna orderRepository jest widoczna
         return orderRepository.findByUserOrderByOrderDateDesc(user);
     }
 }

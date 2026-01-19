@@ -18,12 +18,11 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Service
-@Transactional // Lab 9: Zarządzanie transakcjami
+@Transactional
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
 
-    // Lab 10: Ścieżka do zapisu plików (można przenieść do application.properties)
     private final String UPLOAD_DIR = "uploads/products/";
 
     @Autowired
@@ -44,19 +43,16 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public Product getProductById(Long id) {
         return productRepository.findById(id)
-                .orElseThrow(() -> new ProductNotFoundException(id)); // Lab 9: Rzucanie wyjątku
+                .orElseThrow(() -> new ProductNotFoundException(id));
     }
 
     @Override
     public void saveProduct(Product product, MultipartFile imageFile) {
-        // Lab 10: Obsługa uploadu pliku
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
                 String fileName = imageFile.getOriginalFilename();
-                // Zapisujemy samą nazwę pliku w bazie
                 product.setImagePath(fileName);
 
-                // Zapis fizyczny (najpierw zapisz produkt by mieć ID, jeśli to nowe)
                 Product saved = productRepository.save(product);
 
                 Path uploadPath = Paths.get(UPLOAD_DIR + saved.getId());

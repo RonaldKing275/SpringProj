@@ -2,7 +2,6 @@ package pl.rsz.springproj.repositories;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,9 +19,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @EntityGraph(attributePaths = {"category", "tags"})
     Optional<Product> findById(Long id);
 
-    @EntityGraph(attributePaths = {"category", "tags"})
-    List<Product> findByNameOrCategoryName(@Param("phrase") String phrase);
-
     @Modifying
     @Transactional
     @Query("UPDATE Product p SET p.bestBeforeDate = :newDate WHERE p.id = :id")
@@ -30,7 +26,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @EntityGraph(attributePaths = {"category", "tags"})
     @Query("""
-        SELECT p FROM Product p 
+        SELECT p FROM Product p
         WHERE (:#{#filter.phrase} IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :#{#filter.phrase}, '%')))
         AND (:#{#filter.minPrice} IS NULL OR p.price >= :#{#filter.minPrice})
         AND (:#{#filter.maxPrice} IS NULL OR p.price <= :#{#filter.maxPrice})

@@ -117,10 +117,12 @@
             </span>
         </td>
 
-        <td><form th:action="@{/cart/add}" method="post" style="display:inline;">
-            <input type="hidden" name="productId" th:value="${prod.id}"/>
-            <input type="submit" value="Do koszyka"/>
-        </form></td>
+        <td>
+            <form th:action="@{/cart/add}" method="post" style="display:inline;">
+                <input type="hidden" name="productId" th:value="${prod.id}"/>
+                <input type="submit" value="Do koszyka"/>
+            </form>
+        </td>
     </tr>
 
 
